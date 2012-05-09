@@ -7,8 +7,8 @@ namespace Interpreter.message
 {
     class Message
     {
-        private MessageType type { get; set; }
-        private Object body { get; set; }
+        public MessageType type { get; private set; }
+        public Object body { get; private set; }
 
         public Message(MessageType type, Object body)
         {
