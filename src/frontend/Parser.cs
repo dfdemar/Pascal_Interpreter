@@ -9,7 +9,7 @@ namespace Interpreter.frontend
 {
     public abstract class Parser : MessageProducer
     {
-        public static SymTab symTab { get; protected set; }    // Generate symbol table
+        public static SymbolTable symTab { get; protected set; }    // Generate symbol table
         protected static MessageHandler messageHandler;        // Message handler delegate
 
         public Scanner scanner { get; protected set; }
@@ -32,7 +32,7 @@ namespace Interpreter.frontend
 
         public Token getCurrentToken()
         {
-            return scanner.currentToken();
+            return scanner.currentToken;
         }
 
         public Token nextToken()

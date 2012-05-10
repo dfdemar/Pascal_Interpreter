@@ -9,13 +9,13 @@ namespace Interpreter.frontend
 {
     public class Source : MessageProducer
     {
-        public static const char EOL = '\n'; // end-of-line character
-        public static const char EOF = (char)0; // end-of-file-character
+        public const char EOL = '\n'; // end-of-line character
+        public const char EOF = (char)0; // end-of-file-character
 
         private StreamReader reader; // reader for the source program
         private string line; // source line
-        private int lineNum { get; set; } // current source line number
-        private int currentPos; // current source line position
+        public int lineNum { get; private set; } // current source line number
+        public int currentPos { get; private set; } // current source line position
 
         private MessageHandler messageHandler; // delegate to handle messages
 
@@ -24,6 +24,7 @@ namespace Interpreter.frontend
             this.lineNum = 0;
             this.currentPos = -2; //set to -2 to read the first source line
             this.reader = reader;
+            this.messageHandler = new MessageHandler();
         }
 
         public char currentChar()

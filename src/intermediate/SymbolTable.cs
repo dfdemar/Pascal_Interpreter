@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Interpreter.intermediate
 {
-    public interface ICode
+    public interface SymbolTable
     {
     }
 }

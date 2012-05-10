@@ -7,8 +7,8 @@ namespace Interpreter.message
 {
     public interface MessageProducer
     {
-        public void addMessageListener(MessageListener listener);  // Add a listener to the listener list
-        public void removeMessageListener(MessageListener listener); // Remove a listener from the listener list
-        public void sendMessage(Message message); // Notify listeners after sending the message
+        void addMessageListener(MessageListener listener);  // Add a listener to the listener list
+        void removeMessageListener(MessageListener listener); // Remove a listener from the listener list
+        void sendMessage(Message message); // Notify listeners after sending the message
     }
 }

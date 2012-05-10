@@ -8,16 +8,11 @@ namespace Interpreter.frontend
     public abstract class Scanner
     {
         protected Source source;
-        private Token currentToken;
+        public Token currentToken { get; private set; }
 
         public Scanner(Source source)
         {
             this.source = source;
-        }
-
-        public Token currentToken()
-        {
-            return currentToken;
         }
 
         // return next token from source

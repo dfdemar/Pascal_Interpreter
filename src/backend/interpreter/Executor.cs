@@ -8,9 +8,9 @@ using Interpreter.message;
 
 namespace Interpreter.backend.interpreter
 {
-    class Executor : Backend
+    public class Executor : Backend
     {
-        public void process(ICode iCode, SymTab symTab)
+        public override void process(ICode iCode, SymbolTable symTab)
         {
             long startTime = DateTime.Now.Ticks;
             float elapsedTime = (DateTime.Now.Ticks - startTime) / 1000f;

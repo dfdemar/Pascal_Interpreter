@@ -11,14 +11,14 @@ namespace Interpreter.frontend
         protected string text; // token text
         protected Object value; // token value
         protected Source source; // source
-        protected int lineNum { get; } // line number of the token's source line
+        public int lineNum { get; protected set; } // line number of the token's source line
         protected int position; // position of the first token character
 
         public Token(Source source)
         {
             this.source = source;
-            this.lineNum = source.getLineNum();
-            this.position = source.getPosition();
+            this.lineNum = source.lineNum;
+            this.position = source.currentPos;
 
             extract();
         }

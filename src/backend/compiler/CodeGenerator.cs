@@ -10,7 +10,7 @@ namespace Interpreter.backend.compiler
 {
     public class CodeGenerator : Backend
     {
-        public void process(ICode iCode, SymTab symTab)
+        public override void process(ICode iCode, SymbolTable symTab)
         {
             long startTime = DateTime.Now.Ticks;
             float elapsedTime = (DateTime.Now.Ticks - startTime) / 1000f;

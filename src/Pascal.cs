@@ -15,7 +15,7 @@ namespace Interpreter
         private Parser parser;    // language independent parser
         private Source source;    // language independent scanner
         private ICode iCode;      // generated intermediate code
-        private SymTab symTab;    // generated symbol table
+        private SymbolTable symTab;    // generated symbol table
         private Backend backend;  // backend
 
         public Pascal(string operation, string filePath, string flags)
@@ -81,9 +81,10 @@ namespace Interpreter
             {
                 Console.WriteLine(USAGE);
             }
+            Console.ReadKey();
         }
 
-        private static readonly string SOURCE_LINE_FORMAT = "%03d %s";
+        private static readonly string SOURCE_LINE_FORMAT = "{0:000} {1}";
 
         // listener for source messages
         private class SourceMessageListener : MessageListener
@@ -95,19 +96,19 @@ namespace Interpreter
                 switch (type)
                 {
                     case MessageType.SOURCE_LINE:
-                    {
-                        int lineNumber = (int)body[0];
-                        string lineText = (string)body[1];
-                        Console.WriteLine(String.Format(SOURCE_LINE_FORMAT, lineNumber, lineText));
-                        break;
-                    }
+                        {
+                            int lineNumber = (int)body[0];
+                            string lineText = (string)body[1];
+                            Console.WriteLine(String.Format(SOURCE_LINE_FORMAT, lineNumber, lineText));
+                            break;
+                        }
                 }
             }
         }
 
-        private static readonly string PARSER_SUMMARY_FORMAT = "\n%,20d source lines." +
-                                                             "\n%,20d syntax errors." +
-                                                             "\n%,20.2f seconds total parsing time.\n";
+        private static readonly string PARSER_SUMMARY_FORMAT = "\n{0,2} source lines." +
+                                                               "\n{1,2} syntax errors." +
+                                                               "\n{2:0.00} seconds total parsing time.\n";
 
         // Listener for parser messages
         private class ParserMessageListener : MessageListener
@@ -118,14 +119,51 @@ namespace Interpreter
                 switch (type)
                 {
                     case MessageType.PARSER_SUMMARY:
-                    {
-                        Object[] body = (Object[])message.body;  // Object is Number in body (NEED TO LOOK INTO IConvertible Interface)
-                        int statementCount = (int)body[0];
-                        int syntaxErrors = (int)body[1];
-                        float elapsedTime = (float)body[2];
-                        Console.WriteLine(PARSER_SUMMARY_FORMAT, statementCount, syntaxErrors, elapsedTime);
-                        break;
-                    }
+                        {
+                            Object[] body = (Object[])message.body;  // Object is Number in Java (NEED TO LOOK INTO IConvertible Interface)
+                            int statementCount = (int)body[0];
+                            int syntaxErrors = (int)body[1];
+                            float elapsedTime = (float)body[2];
+                            Console.WriteLine(String.Format(PARSER_SUMMARY_FORMAT, statementCount, syntaxErrors, elapsedTime));
+                            break;
+                        }
+                }
+            }
+        }
+
+        private static readonly string INTERPRETER_SUMMARY_FORMAT = "\n{0,2} statements executed." +
+                                                                    "\n{1,2} runtime errors." +
+                                                                    "\n{2:0.00} seconds total execution time.\n";
+
+        private static readonly string COMPILER_SUMMARY_FORMAT = "\n{0,2} instructions generated." +
+                                                                 "\n{1:0.00} seconds total code generation time.\n";
+
+        // Listener for back end messages
+        private class BackendMessageListener : MessageListener
+        {
+            public void messageReceived(Message message)
+            {
+                MessageType type = message.type;
+                switch (type)
+                {
+                    case MessageType.INTERPRETER_SUMMARY:
+                        {
+                            Object[] body = (Object[])message.body;
+                            int executionCount = (int)body[0];
+                            int runtimeErrors = (int)body[1];
+                            float elapsedTime = (float)body[2];
+                            Console.WriteLine(String.Format(INTERPRETER_SUMMARY_FORMAT, executionCount, runtimeErrors, elapsedTime));
+                            break;
+                        }
+
+                    case MessageType.COMPILER_SUMMARY:
+                        {
+                            Object[] body = (Object[])message.body;
+                            int instructionCount = (int)body[0];
+                            float elapsedTime = (float)body[1];
+                            Console.WriteLine(String.Format(COMPILER_SUMMARY_FORMAT, instructionCount, elapsedTime));
+                            break;
+                        }
                 }
             }
         }

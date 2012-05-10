@@ -5,14 +5,14 @@ using System.Text;
 
 namespace Interpreter.frontend.pascal
 {
-    class PascalScanner : Scanner
+    public class PascalScanner : Scanner
     {
         public PascalScanner(Source source):base(source)
         {
         }
 
         // Extract and return the next Pascal token from the source.
-        protected Token extractToken()
+        protected override Token extractToken()
         {
             Token token;
             char currentchar = currentChar();

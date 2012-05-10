@@ -7,13 +7,13 @@ using Interpreter.message;
 
 namespace Interpreter.frontend.pascal
 {
-    class PascalParserTD :Parser
+    public class PascalParserTD :Parser
     {
         public PascalParserTD(Scanner scanner):base(scanner)
         {
         }
 
-        public void parse()
+        public override void parse()
         {
             Token token;
             long startTime = DateTime.Now.Ticks;
@@ -24,7 +24,12 @@ namespace Interpreter.frontend.pascal
 
             float elapsedTime = (DateTime.Now.Ticks - startTime) / 1000f;
             sendMessage(new Message(Interpreter.message.MessageType.PARSER_SUMMARY, 
-                                    new Object[] { token.getLineNumber(), getErrorCount(), elapsedTime }));
+                                    new Object[] { token.lineNum, getErrorCount(), elapsedTime }));
+        }
+
+        public override int getErrorCount()
+        {
+            return 0;
         }
     }
 }

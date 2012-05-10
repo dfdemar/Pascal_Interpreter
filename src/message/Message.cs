@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Interpreter.message
 {
-    class Message
+    public class Message
     {
         public MessageType type { get; private set; }
         public Object body { get; private set; }
