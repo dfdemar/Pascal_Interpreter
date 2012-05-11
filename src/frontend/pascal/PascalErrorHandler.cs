@@ -20,14 +20,14 @@ namespace Interpreter.frontend.pascal
                                                                                     errorCode.ToString()}));
 
             if (++errorCount > MAX_ERRORS)
-                abortTranslation(TOO_MANY_ERRORS, parser);
+                abortTranslation(PascalErrorCode.TOO_MANY_ERRORS, parser);
         }
 
         public void abortTranslation(PascalErrorCode errorCode, Parser parser)
         {
             String fatalText = "FATAL ERROR: " + errorCode.ToString();
             parser.sendMessage(new Message(MessageType.SYNTAX_ERROR, new Object[] {0, 0, "", fatalText}));
-            Environment.Exit(errorCode.getStatus());
+            Environment.Exit(errorCode.status);
         }
     }
 }
