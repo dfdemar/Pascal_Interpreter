@@ -109,6 +109,9 @@ namespace Interpreter
         private static readonly string PARSER_SUMMARY_FORMAT = "\n{0,2} source lines." +
                                                                "\n{1,2} syntax errors." +
                                                                "\n{2:0.00} seconds total parsing time.\n";
+        private static readonly string TOKEN_FORMAT = ">>> %-15s line=%03d, pos=%2d, text=\"%s\"";
+        private static readonly String VALUE_FORMAT = ">>>                 value=%s";
+        private static readonly int PREFIX_WIDTH = 5;
 
         // Listener for parser messages
         private class ParserMessageListener : MessageListener
@@ -120,11 +123,55 @@ namespace Interpreter
                 {
                     case MessageType.PARSER_SUMMARY:
                         {
-                            Object[] body = (Object[])message.body;  // Object is Number in Java (NEED TO LOOK INTO IConvertible Interface)
+                            IConvertible[] body = (IConvertible[])message.body;  // Object is Number in Java (NEED TO LOOK INTO IConvertible Interface)
                             int statementCount = (int)body[0];
                             int syntaxErrors = (int)body[1];
                             float elapsedTime = (float)body[2];
                             Console.WriteLine(String.Format(PARSER_SUMMARY_FORMAT, statementCount, syntaxErrors, elapsedTime));
+                            break;
+                        }
+                    case MessageType.TOKEN:
+                        {
+                            Object[] body = (Object[]) message.body;
+                            int line = (int) body[0];
+                            int position = (int) body[1];
+                            TokenType tokenType = (TokenType) body[2];
+                            string tokenText = (string)body[3];
+                            Object tokenValue = body[4];
+                            Console.WriteLine(TOKEN_FORMAT, tokenType, line, position, tokenText);
+
+                            if (tokenValue != null)
+                            {
+                                if (tokenType == STRING)
+                                {
+                                    tokenValue = "\"" + tokenValue + "\"";
+                                }
+                                Console.WriteLine(String.Format(VALUE_FORMAT, tokenValue));
+                            }
+                        }
+                    case MessageType.SYNTAX_ERROR:
+                        {
+                            Object[] body = (Object[])message.body;
+                            int lineNumber = (int)body[0];
+                            int position = (int)body[1];
+                            string tokenText = (string)body[2];
+                            string errorMessage = (string)body[3];
+
+                            int spaceCount = PREFIX_WIDTH + position;
+                            StringBuilder flagBuffer = new StringBuilder();
+
+                            // Spaces up to the error position
+                            for (int i = 1; i < spaceCount; ++i)
+                                flagBuffer.Append(' ');
+
+                            // A pointer to the error followed by the error message
+                            flagBuffer.Append("^\n*** ").Append(errorMessage);
+
+                            // Text, if any, of the bad token.
+                            if(tokenText != null)
+                                flagBuffer.Append(" [at \"").Append(tokenText).Append("\"]");
+
+                            Console.WriteLine(flagBuffer.ToString());
                             break;
                         }
                 }

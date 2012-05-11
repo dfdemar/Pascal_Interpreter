@@ -7,12 +7,12 @@ namespace Interpreter.frontend
 {
     public class Token
     {
-        protected TokenType type; // language specific token type
-        protected string text; // token text
-        protected Object value; // token value
-        protected Source source; // source
+        public TokenType type { get; protected set; } // language specific token type
+        public string text { get; protected set; } // token text
+        public Object value { get; protected set; } // token value
+        public Source source { get; protected set; } // source
         public int lineNum { get; protected set; } // line number of the token's source line
-        protected int position; // position of the first token character
+        public int position { get; protected set; } // position of the first token character
 
         public Token(Source source)
         {

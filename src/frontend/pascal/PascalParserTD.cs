@@ -9,6 +9,8 @@ namespace Interpreter.frontend.pascal
 {
     public class PascalParserTD :Parser
     {
+        protected static PascalErrorHandler errorHandler = new PascalErrorHandler();
+
         public PascalParserTD(Scanner scanner):base(scanner)
         {
         }
@@ -18,13 +20,32 @@ namespace Interpreter.frontend.pascal
             Token token;
             long startTime = DateTime.Now.Ticks;
 
-            while (!((token = nextToken()) is EofToken))
+            try
             {
-            }
+                while (!((token = nextToken()) is EofToken))
+                {
+                    TokenType tokenType = token.type;
+                    if (tokenType != ERROR)
+                    {
+                        // format each token
+                        sendMessage(new Message(MessageType.PARSER_SUMMARY, new Object[]{token.lineNum,
+                                                                                         token.position,
+                                                                                         tokenType,
+                                                                                         token.text,
+                                                                                         token.value}));
+                    }
+                    else
+                        errorHandler.flag(token, (PascalErrorCode)token.value, this);
+                }
 
-            float elapsedTime = (DateTime.Now.Ticks - startTime) / 1000f;
-            sendMessage(new Message(Interpreter.message.MessageType.PARSER_SUMMARY, 
-                                    new Object[] { token.lineNum, getErrorCount(), elapsedTime }));
+                float elapsedTime = (DateTime.Now.Ticks - startTime) / 100000f;
+                sendMessage(new Message(Interpreter.message.MessageType.PARSER_SUMMARY,
+                                        new IConvertible[] { token.lineNum, getErrorCount(), elapsedTime }));
+            }
+            catch (System.IO.IOException e)
+            {
+                errorHandler.abortTranslation(IO_ERROR, this);
+            }
         }
 
         public override int getErrorCount()
