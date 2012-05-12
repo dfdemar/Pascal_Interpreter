@@ -82,6 +82,5 @@ namespace Interpreter.frontend.pascal
 
         IDENTIFIER, INTEGER, REAL, STRING,
         ERROR, END_OF_FILE
-        //
     }
 }
