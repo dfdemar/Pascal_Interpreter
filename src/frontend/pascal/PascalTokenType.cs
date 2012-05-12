@@ -1,92 +1,87 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Interpreter.frontend.pascal
 {
-    public class PascalTokenType : TokenType
+
+    class WordAttribute: Attribute
     {
-        // RESERVED WORDS
-        public static readonly PascalTokenType AND = new PascalTokenType();
-        public static readonly PascalTokenType ARRAY = new PascalTokenType();
-        public static readonly PascalTokenType BEGIN = new PascalTokenType();
-        public static readonly PascalTokenType CASE = new PascalTokenType();
-        public static readonly PascalTokenType CONST = new PascalTokenType();
-        public static readonly PascalTokenType DIV = new PascalTokenType();
-        public static readonly PascalTokenType DO = new PascalTokenType();
-        public static readonly PascalTokenType DOWNTO = new PascalTokenType();
-        public static readonly PascalTokenType ELSE = new PascalTokenType();
-        public static readonly PascalTokenType END = new PascalTokenType();
-        public static readonly PascalTokenType FILE = new PascalTokenType();
-        public static readonly PascalTokenType FOR = new PascalTokenType();
-        public static readonly PascalTokenType FUNCTION = new PascalTokenType();
-        public static readonly PascalTokenType GOTO = new PascalTokenType();
-        public static readonly PascalTokenType IF = new PascalTokenType();
-        public static readonly PascalTokenType IN = new PascalTokenType();
-        public static readonly PascalTokenType LABEL = new PascalTokenType();
-        public static readonly PascalTokenType MOD = new PascalTokenType();
-        public static readonly PascalTokenType NIL = new PascalTokenType();
-        public static readonly PascalTokenType NOT = new PascalTokenType();
-        public static readonly PascalTokenType OF = new PascalTokenType();
-        public static readonly PascalTokenType OR = new PascalTokenType();
-        public static readonly PascalTokenType PACKED = new PascalTokenType();
-        public static readonly PascalTokenType PROCEDURE = new PascalTokenType();
-        public static readonly PascalTokenType PROGRAM = new PascalTokenType();
-        public static readonly PascalTokenType RECORD = new PascalTokenType();
-        public static readonly PascalTokenType REPEAT = new PascalTokenType();
-        public static readonly PascalTokenType SET = new PascalTokenType();
-        public static readonly PascalTokenType THEN = new PascalTokenType();
-        public static readonly PascalTokenType TO = new PascalTokenType();
-        public static readonly PascalTokenType TYPE = new PascalTokenType();
-        public static readonly PascalTokenType UNTIL = new PascalTokenType();
-        public static readonly PascalTokenType VAR = new PascalTokenType();
-        public static readonly PascalTokenType WHILE = new PascalTokenType();
-        public static readonly PascalTokenType WITH = new PascalTokenType();
+        public string text { get; private set; }
 
-        // SPECIAL SYMBOLS
-        public static readonly PascalTokenType PLUS = new PascalTokenType("+");
-        public static readonly PascalTokenType MINUS = new PascalTokenType("-");
-        public static readonly PascalTokenType STAR = new PascalTokenType("*");
-        public static readonly PascalTokenType SLASH = new PascalTokenType("/");
-        public static readonly PascalTokenType COLON_EQUALS = new PascalTokenType(":=");
-        public static readonly PascalTokenType DOT = new PascalTokenType(".");
-        public static readonly PascalTokenType COMMA = new PascalTokenType(",");
-        public static readonly PascalTokenType SEMICOLON = new PascalTokenType(";");
-        public static readonly PascalTokenType COLON = new PascalTokenType(":");
-        public static readonly PascalTokenType QUOTE = new PascalTokenType("'");
-        public static readonly PascalTokenType EQUALS = new PascalTokenType("=");
-        public static readonly PascalTokenType NOT_EQUALS = new PascalTokenType("<>");
-        public static readonly PascalTokenType LESS_THAN = new PascalTokenType("<");
-        public static readonly PascalTokenType LESS_EQUALS = new PascalTokenType("<=");
-        public static readonly PascalTokenType GREATER_EQUALS = new PascalTokenType(">=");
-        public static readonly PascalTokenType GREATER_THAN = new PascalTokenType(">");
-        public static readonly PascalTokenType LEFT_PAREN = new PascalTokenType("(");
-        public static readonly PascalTokenType RIGHT_PAREN = new PascalTokenType(")");
-        public static readonly PascalTokenType LEFT_BRACKET = new PascalTokenType("[");
-        public static readonly PascalTokenType RIGHT_BRACKET = new PascalTokenType("]");
-        public static readonly PascalTokenType LEFT_BRACE = new PascalTokenType("{");
-        public static readonly PascalTokenType RIGHT_BRACE = new PascalTokenType("}");
-        public static readonly PascalTokenType UP_ARROW = new PascalTokenType("^");
-        public static readonly PascalTokenType DOT_DOT = new PascalTokenType("..");
-
-        public static readonly PascalTokenType INDENTIFIER = new PascalTokenType();
-        public static readonly PascalTokenType INTEGER = new PascalTokenType();
-        public static readonly PascalTokenType REAL = new PascalTokenType();
-        public static readonly PascalTokenType STRING = new PascalTokenType();
-        public static readonly PascalTokenType ERROR = new PascalTokenType();
-        public static readonly PascalTokenType END_OF_FILE = new PascalTokenType();
-
-        private string text;
-
-        PascalTokenType()
-        {
-            this.text = this.ToString().ToLower();
-        }
-
-        PascalTokenType(String text)
+        internal WordAttribute(string text)
         {
             this.text = text;
         }
+    }
+
+    public class PascalTokenTypes
+    {
+        private static readonly int FIRST_RESERVED_INDEX = 0;
+        private static readonly int LAST_RESERVED_INDEX = 34; // 35 total reserved words
+
+        private static readonly int FIRST_SPECIAL_INDEX = 35;
+        private static readonly int LAST_SPECIAL_INDEX = 58; // This is really sloppy. Doesn't seem like C# has an ordinal() method for enums.
+                                                             // Need a better way to implement this.
+
+        public static HashSet<string> RESERVED_WORDS = new HashSet<string>();
+        public static Hashtable SPECIAL_SYMBOLS = new Hashtable();
+
+        static PascalTokenTypes()
+        {
+            string[] values = Enum.GetNames(typeof(PascalTokenType));
+            Attribute[] attributes = Attribute.GetCustomAttributes(typeof(WordAttribute));
+
+            for (int i = FIRST_RESERVED_INDEX; i <= LAST_RESERVED_INDEX; ++i)
+            {
+                RESERVED_WORDS.Add(values[i].ToLower());
+            }
+
+            for (int i = FIRST_SPECIAL_INDEX; i <= LAST_SPECIAL_INDEX; ++i) 
+            {
+                SPECIAL_SYMBOLS.Add(attributes[i].ToString(), values[i]);
+            }
+        }
+    }
+
+    public enum PascalTokenType
+    {
+        // RESERVED WORDS
+        AND, ARRAY, BEGIN, CASE, CONST, DIV, DO, DOWNTO, ELSE, END,
+        FILE, FOR, FUNCTION, GOTO, IF, IN, LABEL, MOD, NIL, NOT,
+        OF, OR, PACKED, PROCEDURE, PROGRAM, RECORD, REPEAT, SET,
+        THEN, TO, TYPE, UNTIL, VAR, WHILE, WITH,
+
+        // SPECIAL SYMBOLS
+        [WordAttribute("+")]  PLUS,
+        [WordAttribute("-")]  MINUS,
+        [WordAttribute("*")]  STAR,
+        [WordAttribute("/")]  SLASH,
+        [WordAttribute(":=")] COLON_EQUALS,
+        [WordAttribute(".")]  DOT,
+        [WordAttribute(",")]  COMMA,
+        [WordAttribute(";")]  SEMICOLON,
+        [WordAttribute(":")]  COLON,
+        [WordAttribute("'")]  QUOTE,
+        [WordAttribute("=")]  EQUALS,
+        [WordAttribute("<>")] NOT_EQUALS,
+        [WordAttribute("<")]  LESS_THAN,
+        [WordAttribute("<=")] LESS_EQUALS,
+        [WordAttribute("<=")] GREATER_EQUALS,
+        [WordAttribute(">")]  GREATER_THAN,
+        [WordAttribute("(")]  LEFT_PAREN,
+        [WordAttribute(")")]  RIGHT_PAREN,
+        [WordAttribute("[")]  LEFT_BRACKET,
+        [WordAttribute("]")]  RIGHT_BRACKET,
+        [WordAttribute("{")]  LEFT_BRACE,
+        [WordAttribute("}")]  RIGHT_BRACE,
+        [WordAttribute("^")]  UP_ARROW,
+        [WordAttribute("..")] DOT_DOT,
+
+        IDENTIFIER, INTEGER, REAL, STRING,
+        ERROR, END_OF_FILE
+        //
     }
 }
