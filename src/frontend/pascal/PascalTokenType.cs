@@ -6,46 +6,6 @@ using System.Text;
 
 namespace Interpreter.frontend.pascal
 {
-
-    class WordAttribute: Attribute
-    {
-        public string text { get; private set; }
-
-        internal WordAttribute(string text)
-        {
-            this.text = text;
-        }
-    }
-
-    public class PascalTokenTypes
-    {
-        private static readonly int FIRST_RESERVED_INDEX = 0;
-        private static readonly int LAST_RESERVED_INDEX = 34; // 35 total reserved words
-
-        private static readonly int FIRST_SPECIAL_INDEX = 35;
-        private static readonly int LAST_SPECIAL_INDEX = 58; // This is really sloppy. Doesn't seem like C# has an ordinal() method for enums.
-                                                             // Need a better way to implement this.
-
-        public static HashSet<string> RESERVED_WORDS = new HashSet<string>();
-        public static Hashtable SPECIAL_SYMBOLS = new Hashtable();
-
-        static PascalTokenTypes()
-        {
-            string[] values = Enum.GetNames(typeof(PascalTokenType));
-            Attribute[] attributes = Attribute.GetCustomAttributes(typeof(WordAttribute));
-
-            for (int i = FIRST_RESERVED_INDEX; i <= LAST_RESERVED_INDEX; ++i)
-            {
-                RESERVED_WORDS.Add(values[i].ToLower());
-            }
-
-            for (int i = FIRST_SPECIAL_INDEX; i <= LAST_SPECIAL_INDEX; ++i) 
-            {
-                SPECIAL_SYMBOLS.Add(attributes[i].ToString(), values[i]);
-            }
-        }
-    }
-
     public enum PascalTokenType
     {
         // RESERVED WORDS
@@ -55,32 +15,130 @@ namespace Interpreter.frontend.pascal
         THEN, TO, TYPE, UNTIL, VAR, WHILE, WITH,
 
         // SPECIAL SYMBOLS
-        [WordAttribute("+")]  PLUS,
-        [WordAttribute("-")]  MINUS,
-        [WordAttribute("*")]  STAR,
-        [WordAttribute("/")]  SLASH,
-        [WordAttribute(":=")] COLON_EQUALS,
-        [WordAttribute(".")]  DOT,
-        [WordAttribute(",")]  COMMA,
-        [WordAttribute(";")]  SEMICOLON,
-        [WordAttribute(":")]  COLON,
-        [WordAttribute("'")]  QUOTE,
-        [WordAttribute("=")]  EQUALS,
-        [WordAttribute("<>")] NOT_EQUALS,
-        [WordAttribute("<")]  LESS_THAN,
-        [WordAttribute("<=")] LESS_EQUALS,
-        [WordAttribute("<=")] GREATER_EQUALS,
-        [WordAttribute(">")]  GREATER_THAN,
-        [WordAttribute("(")]  LEFT_PAREN,
-        [WordAttribute(")")]  RIGHT_PAREN,
-        [WordAttribute("[")]  LEFT_BRACKET,
-        [WordAttribute("]")]  RIGHT_BRACKET,
-        [WordAttribute("{")]  LEFT_BRACE,
-        [WordAttribute("}")]  RIGHT_BRACE,
-        [WordAttribute("^")]  UP_ARROW,
-        [WordAttribute("..")] DOT_DOT,
+        PLUS, MINUS, STAR, SLASH, COLON_EQUALS, DOT, COMMA, SEMICOLON,
+        COLON, QUOTE, EQUALS, NOT_EQUALS, LESS_THAN, LESS_EQUALS, GREATER_EQUALS,
+        GREATER_THAN, LEFT_PAREN, RIGHT_PAREN, LEFT_BRACKET, RIGHT_BRACKET,
+        LEFT_BRACE, RIGHT_BRACE, UP_ARROW, DOT_DOT,
 
         IDENTIFIER, INTEGER, REAL, STRING,
         ERROR, END_OF_FILE
+    }
+
+    public class PascalTokenTypeExtensions
+    {
+        public static HashSet<string> RESERVED_WORDS = new HashSet<string>()
+            {
+                PascalTokenType.AND.ToString().ToLower(),
+                PascalTokenType.ARRAY.ToString().ToLower(),
+                PascalTokenType.BEGIN.ToString().ToLower(),
+                PascalTokenType.CASE.ToString().ToLower(),
+                PascalTokenType.CONST.ToString().ToLower(),
+                PascalTokenType.DIV.ToString().ToLower(),
+                PascalTokenType.DO.ToString().ToLower(),
+                PascalTokenType.DOWNTO.ToString().ToLower(),
+                PascalTokenType.ELSE.ToString().ToLower(),
+                PascalTokenType.END.ToString().ToLower(),
+                PascalTokenType.FILE.ToString().ToLower(),
+                PascalTokenType.FOR.ToString().ToLower(),
+                PascalTokenType.FUNCTION.ToString().ToLower(),
+                PascalTokenType.GOTO.ToString().ToLower(),
+                PascalTokenType.IF.ToString().ToLower(),
+                PascalTokenType.IN.ToString().ToLower(),
+                PascalTokenType.LABEL.ToString().ToLower(),
+                PascalTokenType.MOD.ToString().ToLower(),
+                PascalTokenType.NIL.ToString().ToLower(),
+                PascalTokenType.NOT.ToString().ToLower(),
+                PascalTokenType.OF.ToString().ToLower(),
+                PascalTokenType.OR.ToString().ToLower(),
+                PascalTokenType.PACKED.ToString().ToLower(),
+                PascalTokenType.PROCEDURE.ToString().ToLower(),
+                PascalTokenType.PROGRAM.ToString().ToLower(),
+                PascalTokenType.RECORD.ToString().ToLower(),
+                PascalTokenType.REPEAT.ToString().ToLower(),
+                PascalTokenType.SET.ToString().ToLower(),
+                PascalTokenType.THEN.ToString().ToLower(),
+                PascalTokenType.TO.ToString().ToLower(),
+                PascalTokenType.TYPE.ToString().ToLower(),
+                PascalTokenType.UNTIL.ToString().ToLower(),
+                PascalTokenType.VAR.ToString().ToLower(),
+                PascalTokenType.WHILE.ToString().ToLower(),
+                PascalTokenType.WITH.ToString().ToLower()
+            };
+
+        private static readonly Dictionary<PascalTokenType, PascalTokenTypeText> SpecialSymbols = new Dictionary<PascalTokenType, PascalTokenTypeText>()
+            {
+                {PascalTokenType.PLUS, new PascalTokenTypeText("+")},
+                {PascalTokenType.MINUS, new PascalTokenTypeText("-")},
+                {PascalTokenType.STAR, new PascalTokenTypeText("*")},
+                {PascalTokenType.SLASH, new PascalTokenTypeText("/")},
+                {PascalTokenType.COLON_EQUALS, new PascalTokenTypeText(":=")},
+                {PascalTokenType.DOT, new PascalTokenTypeText(".")},
+                {PascalTokenType.COMMA, new PascalTokenTypeText(",")},
+                {PascalTokenType.SEMICOLON, new PascalTokenTypeText(";")},
+                {PascalTokenType.COLON, new PascalTokenTypeText(":")},
+                {PascalTokenType.QUOTE, new PascalTokenTypeText("'")},
+                {PascalTokenType.EQUALS, new PascalTokenTypeText("=")},
+                {PascalTokenType.NOT_EQUALS, new PascalTokenTypeText("<>")},
+                {PascalTokenType.LESS_THAN, new PascalTokenTypeText("<")},
+                {PascalTokenType.LESS_EQUALS, new PascalTokenTypeText("<=")},
+                {PascalTokenType.GREATER_EQUALS, new PascalTokenTypeText(">=")},
+                {PascalTokenType.GREATER_THAN, new PascalTokenTypeText(">")},
+                {PascalTokenType.LEFT_PAREN, new PascalTokenTypeText("(")},
+                {PascalTokenType.RIGHT_PAREN, new PascalTokenTypeText(")")},
+                {PascalTokenType.LEFT_BRACKET, new PascalTokenTypeText("[")},
+                {PascalTokenType.RIGHT_BRACKET, new PascalTokenTypeText("]")},
+                {PascalTokenType.LEFT_BRACE, new PascalTokenTypeText("{")},
+                {PascalTokenType.RIGHT_BRACE, new PascalTokenTypeText("}")},
+                {PascalTokenType.UP_ARROW, new PascalTokenTypeText("^")},
+                {PascalTokenType.DOT_DOT, new PascalTokenTypeText("..")}
+            };
+
+        public static Hashtable SPECIAL_SYMBOLS = new Hashtable()
+            {
+                {new PascalTokenTypeText("+"),  PascalTokenType.PLUS},
+                {new PascalTokenTypeText("-"),  PascalTokenType.MINUS},
+                {new PascalTokenTypeText("*"),  PascalTokenType.STAR},
+                {new PascalTokenTypeText("/"),  PascalTokenType.SLASH},
+                {new PascalTokenTypeText(":="), PascalTokenType.COLON_EQUALS},
+                {new PascalTokenTypeText("."),  PascalTokenType.DOT},
+                {new PascalTokenTypeText(","),  PascalTokenType.COMMA},
+                {new PascalTokenTypeText(";"),  PascalTokenType.SEMICOLON},
+                {new PascalTokenTypeText(":"),  PascalTokenType.COLON},
+                {new PascalTokenTypeText("'"),  PascalTokenType.QUOTE},
+                {new PascalTokenTypeText("="),  PascalTokenType.EQUALS},
+                {new PascalTokenTypeText("<>"), PascalTokenType.NOT_EQUALS},
+                {new PascalTokenTypeText("<"),  PascalTokenType.LESS_THAN},
+                {new PascalTokenTypeText("<="), PascalTokenType.LESS_EQUALS},
+                {new PascalTokenTypeText(">="), PascalTokenType.GREATER_EQUALS},
+                {new PascalTokenTypeText(">"),  PascalTokenType.GREATER_THAN},
+                {new PascalTokenTypeText("("),  PascalTokenType.LEFT_PAREN},
+                {new PascalTokenTypeText(")"),  PascalTokenType.RIGHT_PAREN},
+                {new PascalTokenTypeText("["),  PascalTokenType.LEFT_BRACKET},
+                {new PascalTokenTypeText("]"),  PascalTokenType.RIGHT_BRACKET},
+                {new PascalTokenTypeText("{"),  PascalTokenType.LEFT_BRACE},
+                {new PascalTokenTypeText("}"),  PascalTokenType.RIGHT_BRACE},
+                {new PascalTokenTypeText("^"),  PascalTokenType.UP_ARROW},
+                {new PascalTokenTypeText(".."), PascalTokenType.DOT_DOT}
+            };
+
+        private static PascalTokenTypeText GetPascalTokenTypeText(PascalTokenType type)
+        {
+            return SpecialSymbols[type];
+        }
+
+        public string getText()
+        {
+            return "0";
+        }
+
+        public class PascalTokenTypeText
+        {
+            public string text { get; private set; }
+
+            public PascalTokenTypeText(string text)
+            {
+                this.text = text;
+            }
+        }
     }
 }
