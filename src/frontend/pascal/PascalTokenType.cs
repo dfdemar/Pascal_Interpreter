@@ -26,6 +26,7 @@ namespace Interpreter.frontend.pascal
 
     public class PascalTokenTypeExtensions
     {
+        // Set of lower-cased Pascal reserved word text strings.
         public static HashSet<string> RESERVED_WORDS = new HashSet<string>()
             {
                 PascalTokenType.AND.ToString().ToLower(),
@@ -93,42 +94,24 @@ namespace Interpreter.frontend.pascal
                 {PascalTokenType.DOT_DOT, new PascalTokenTypeText("..")}
             };
 
-        public static Hashtable SPECIAL_SYMBOLS = new Hashtable()
-            {
-                {new PascalTokenTypeText("+"),  PascalTokenType.PLUS},
-                {new PascalTokenTypeText("-"),  PascalTokenType.MINUS},
-                {new PascalTokenTypeText("*"),  PascalTokenType.STAR},
-                {new PascalTokenTypeText("/"),  PascalTokenType.SLASH},
-                {new PascalTokenTypeText(":="), PascalTokenType.COLON_EQUALS},
-                {new PascalTokenTypeText("."),  PascalTokenType.DOT},
-                {new PascalTokenTypeText(","),  PascalTokenType.COMMA},
-                {new PascalTokenTypeText(";"),  PascalTokenType.SEMICOLON},
-                {new PascalTokenTypeText(":"),  PascalTokenType.COLON},
-                {new PascalTokenTypeText("'"),  PascalTokenType.QUOTE},
-                {new PascalTokenTypeText("="),  PascalTokenType.EQUALS},
-                {new PascalTokenTypeText("<>"), PascalTokenType.NOT_EQUALS},
-                {new PascalTokenTypeText("<"),  PascalTokenType.LESS_THAN},
-                {new PascalTokenTypeText("<="), PascalTokenType.LESS_EQUALS},
-                {new PascalTokenTypeText(">="), PascalTokenType.GREATER_EQUALS},
-                {new PascalTokenTypeText(">"),  PascalTokenType.GREATER_THAN},
-                {new PascalTokenTypeText("("),  PascalTokenType.LEFT_PAREN},
-                {new PascalTokenTypeText(")"),  PascalTokenType.RIGHT_PAREN},
-                {new PascalTokenTypeText("["),  PascalTokenType.LEFT_BRACKET},
-                {new PascalTokenTypeText("]"),  PascalTokenType.RIGHT_BRACKET},
-                {new PascalTokenTypeText("{"),  PascalTokenType.LEFT_BRACE},
-                {new PascalTokenTypeText("}"),  PascalTokenType.RIGHT_BRACE},
-                {new PascalTokenTypeText("^"),  PascalTokenType.UP_ARROW},
-                {new PascalTokenTypeText(".."), PascalTokenType.DOT_DOT}
-            };
+        // Dictionary of Pascal special symbols. Each special symbol's text
+        // is the key to its Pascal token type.
+        public static Hashtable SPECIAL_SYMBOLS = new Hashtable();
+
+        static PascalTokenTypeExtensions()
+        {
+            foreach (KeyValuePair<PascalTokenType, PascalTokenTypeText> Entry in SpecialSymbols)
+                SPECIAL_SYMBOLS.Add(Entry.Value, Entry.Key.ToString().ToLower());
+        }
 
         private static PascalTokenTypeText GetPascalTokenTypeText(PascalTokenType type)
         {
             return SpecialSymbols[type];
         }
 
-        public string getText()
+        public string getText(this PascalTokenType type)
         {
-            return "0";
+            return GetPascalTokenTypeText(type).text;
         }
 
         public class PascalTokenTypeText
