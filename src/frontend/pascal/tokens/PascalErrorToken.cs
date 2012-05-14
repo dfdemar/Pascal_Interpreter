@@ -10,7 +10,7 @@ namespace Interpreter.frontend.pascal.tokens
         public PascalErrorToken(Source source, PascalErrorCode errorCode, string tokenText) : base(source)
         {
             this.text = tokenText;
-            this.type = ERROR;
+            this.type = PascalTokenType.ERROR;
             this.value = errorCode;
         }
 

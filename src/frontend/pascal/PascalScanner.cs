@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Interpreter.frontend.pascal.tokens;
 
 namespace Interpreter.frontend.pascal
 {
     public class PascalScanner : Scanner
     {
-        public PascalScanner(Source source):base(source)
+        public PascalScanner(Source source) : base(source)
         {
         }
 
@@ -22,7 +23,7 @@ namespace Interpreter.frontend.pascal
             // Construct the next token. The current character determines the
             // token type.
             if (currentchar == Source.EOF)
-                token = new EofToken(source, END_OF_FILE);
+                token = new EofToken(source);
             else if (char.IsLetter(currentchar))
                 token = new PascalWordToken(source);
             else if (char.IsDigit(currentchar))
@@ -33,7 +34,7 @@ namespace Interpreter.frontend.pascal
                 token = new PascalSpecialSymbolToken(source);
             else
             {
-                token = new PascalErrorToken(source, INVALID_CHARACTER, Char.ToString(currentchar));
+                token = new PascalErrorToken(source, PascalErrorCode.INVALID_CHARACTER, Char.ToString(currentchar));
                 nextChar(); // consume character
             }
 
