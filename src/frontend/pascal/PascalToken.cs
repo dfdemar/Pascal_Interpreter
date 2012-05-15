@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Interpreter.frontend.pascal
 {
-    class PascalToken : Token
+    public class PascalToken : Token
     {
         protected PascalToken(Source source) : base(source)
         {

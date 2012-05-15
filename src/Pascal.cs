@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Interpreter.frontend;
+using Interpreter.frontend.pascal;
 using Interpreter.intermediate;
 using Interpreter.backend;
 using Interpreter.message;
@@ -109,8 +110,8 @@ namespace Interpreter
         private static readonly string PARSER_SUMMARY_FORMAT = "\n{0,2} source lines." +
                                                                "\n{1,2} syntax errors." +
                                                                "\n{2:0.00} seconds total parsing time.\n";
-        private static readonly string TOKEN_FORMAT = ">>> %-15s line=%03d, pos=%2d, text=\"%s\"";
-        private static readonly String VALUE_FORMAT = ">>>                 value=%s";
+        private static readonly string TOKEN_FORMAT = ">>> {0,-15} line={1:000}, pos={2,2}, text=\"{3}\"";
+        private static readonly String VALUE_FORMAT = ">>>                 value={0}";
         private static readonly int PREFIX_WIDTH = 5;
 
         // Listener for parser messages
@@ -123,7 +124,7 @@ namespace Interpreter
                 {
                     case MessageType.PARSER_SUMMARY:
                         {
-                            IConvertible[] body = (IConvertible[])message.body;  // Object is Number in Java (NEED TO LOOK INTO IConvertible Interface)
+                            Object[] body = (Object[])message.body;
                             int statementCount = (int)body[0];
                             int syntaxErrors = (int)body[1];
                             float elapsedTime = (float)body[2];
@@ -142,12 +143,14 @@ namespace Interpreter
 
                             if (tokenValue != null)
                             {
-                                if (tokenType == STRING)
+                                if (tokenType == PascalTokenType.STRING)
                                 {
                                     tokenValue = "\"" + tokenValue + "\"";
                                 }
                                 Console.WriteLine(String.Format(VALUE_FORMAT, tokenValue));
                             }
+
+                            break;
                         }
                     case MessageType.SYNTAX_ERROR:
                         {

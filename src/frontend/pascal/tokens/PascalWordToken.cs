@@ -12,7 +12,7 @@ namespace Interpreter.frontend.pascal.tokens
         {
         }
 
-        protected void extract()
+        protected override void extract()
         {
             StringBuilder textBuffer = new StringBuilder();
             char currentchar = currentChar();

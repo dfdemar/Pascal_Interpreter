@@ -90,7 +90,7 @@ namespace Interpreter.frontend.pascal
             return status;
         }
 
-        public string ToString()
+        public override string ToString()
         {
             return message;
         }

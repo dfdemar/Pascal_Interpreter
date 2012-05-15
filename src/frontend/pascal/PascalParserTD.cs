@@ -25,10 +25,10 @@ namespace Interpreter.frontend.pascal
                 while (!((token = nextToken()) is EofToken))
                 {
                     TokenType tokenType = token.type;
-                    if (tokenType != ERROR)
+                    if (tokenType != PascalTokenType.ERROR)
                     {
                         // format each token
-                        sendMessage(new Message(MessageType.PARSER_SUMMARY, new Object[]{token.lineNum,
+                        sendMessage(new Message(MessageType.TOKEN, new Object[]{token.lineNum,
                                                                                          token.position,
                                                                                          tokenType,
                                                                                          token.text,
@@ -39,12 +39,12 @@ namespace Interpreter.frontend.pascal
                 }
 
                 float elapsedTime = (DateTime.Now.Ticks - startTime) / 100000f;
-                sendMessage(new Message(Interpreter.message.MessageType.PARSER_SUMMARY,
+                sendMessage(new Message(MessageType.PARSER_SUMMARY,
                                         new IConvertible[] { token.lineNum, getErrorCount(), elapsedTime }));
             }
             catch (System.IO.IOException e)
             {
-                errorHandler.abortTranslation(IO_ERROR, this);
+                errorHandler.abortTranslation(PascalErrorCode.IO_ERROR, this);
             }
         }
 

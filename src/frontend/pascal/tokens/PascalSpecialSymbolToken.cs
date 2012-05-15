@@ -11,7 +11,7 @@ namespace Interpreter.frontend.pascal.tokens
         {
         }
 
-        protected void extract()
+        protected override void extract()
         {
             char currentchar = currentChar();
             text = Char.ToString(currentchar);

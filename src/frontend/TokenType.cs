@@ -7,5 +7,6 @@ namespace Interpreter.frontend
 {
     public interface TokenType
     {
+        string ToString();
     }
 }

@@ -49,10 +49,18 @@ namespace Interpreter.frontend.pascal
             while (Char.IsWhiteSpace(currentchar) || (currentchar == '{'))
             {
                 if (currentchar == '{')
+                {
                     do
                     {
                         currentchar = nextChar();
                     } while ((currentchar != '}') && (currentchar != Source.EOF));
+
+                    if (currentchar == '}')
+                        currentchar = nextChar();
+                }
+
+                else
+                    currentchar = nextChar();
             }
         }
     }

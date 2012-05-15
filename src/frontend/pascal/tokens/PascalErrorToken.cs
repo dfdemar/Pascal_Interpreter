@@ -14,7 +14,7 @@ namespace Interpreter.frontend.pascal.tokens
             this.value = errorCode;
         }
 
-        protected void extract()
+        protected override void extract()
         {
         }
     }

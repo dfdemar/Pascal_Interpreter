@@ -29,7 +29,7 @@ namespace Interpreter.frontend
          * tokens.  After extracting the token, the current source line position
          * will be one beyond the last token character.
          */
-        protected void extract()
+        protected virtual void extract()
         {
             text = Char.ToString(currentChar());
             value = null;

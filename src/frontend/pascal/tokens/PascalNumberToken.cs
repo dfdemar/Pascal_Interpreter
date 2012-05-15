@@ -13,7 +13,7 @@ namespace Interpreter.frontend.pascal.tokens
         {
         }
 
-        protected void extract()
+        protected override void extract()
         {
             StringBuilder textBuffer = new StringBuilder(); // token's characters
             extractNumber(textBuffer);
@@ -91,8 +91,109 @@ namespace Interpreter.frontend.pascal.tokens
             }
 
             else if (type == PascalTokenType.REAL)
-                float floatValue = computeFloatValue(wholeDigits, fractionDigits,
-                                                 exponentDigits, exponentSign);
+            {
+                float floatValue = computeFloatValue(wholeDigits, fractionDigits, exponentDigits, exponentSign);
+
+                if (type != PascalTokenType.ERROR)
+                    value = (float)floatValue;
+            }
+
+        }
+
+        // Extract and return the digits of an unsigned integer
+        private String unsignedIntegerDigits(StringBuilder textBuffer)
+        {
+            char currentchar = currentChar();
+
+            // Must have at least one digit
+            if (!Char.IsDigit(currentchar))
+            {
+                type = PascalTokenType.ERROR;
+                value = PascalErrorCode.INVALID_NUMBER;
+                return null;
+            }
+
+            // Extract the digits
+            StringBuilder digits = new StringBuilder();
+            while (Char.IsDigit(currentchar))
+            {
+                textBuffer.Append(currentchar);
+                digits.Append(currentchar);
+                currentchar = nextChar();
+            }
+
+            return digits.ToString();
+        }
+
+        // Compute and return the integer value of a string of digits.
+        // Check for overflow.
+        private int computeIntegerValue(String digits)
+        {
+            if (digits == null)
+                return 0;
+
+            int integerValue = 0;
+            int previousValue = -1; // overflow occurred if previousValue > integerValue
+            int index = 0;
+
+            // Loop over the digits to compute the integer value as long
+            // as there is no overflow
+            while ((index < digits.Length) && (integerValue >= previousValue))
+            {
+                previousValue = integerValue;
+                integerValue = 10 * integerValue + int.Parse(digits[index++].ToString());
+            }
+
+            // No overflow: Return the integer value
+            if (integerValue >= previousValue)
+                return integerValue;
+
+            // Overflow:  Set the integer out of range error.
+            else
+            {
+                type = PascalTokenType.ERROR;
+                value = PascalErrorCode.RANGE_INTEGER;
+                return 0;
+            }
+        }
+
+        // Compute and return the float value of a real number.
+        private float computeFloatValue(string wholeDigits, string fractionDigits, string exponentDigits, char exponentSign)
+        {
+            double floatValue = 0.0;
+            int exponentValue = computeIntegerValue(exponentDigits);
+            string digits = wholeDigits;
+
+            // Negate the exponent if the exponent sign is '-'.
+            if (exponentSign == '-')
+                exponentValue = -exponentValue;
+
+            // If there are any fraction digits, adjust the exponent value
+            // and append the fraction digits.
+            if (fractionDigits != null)
+            {
+                exponentValue -= fractionDigits.Length;
+                digits += fractionDigits;
+            }
+
+            // Check for a real number out of range error.
+            if (Math.Abs(exponentValue + wholeDigits.Length) > MAX_EXPONENT)
+            {
+                type = PascalTokenType.ERROR;
+                value = PascalErrorCode.RANGE_REAL;
+                return 0.0f;
+            }
+
+            // Loop over the digits to compute the float value.
+            int index = 0;
+            while(index < digits.Length)
+                floatValue = 10 * floatValue + int.Parse(digits[index++].ToString());
+
+            // Adjust the float value based on the exponent value.
+            if (exponentValue != 0)
+                floatValue *= Math.Pow(10, exponentValue);
+
+            return (float)floatValue;
         }
     }
 }

@@ -162,5 +162,10 @@ namespace Interpreter.frontend.pascal
             this.name = name;
             this.text = text;
         }
+
+        public override string ToString()
+        {
+            return this.name;
+        }
     }
 }
