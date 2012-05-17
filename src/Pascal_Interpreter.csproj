@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{527F59F9-586F-446D-A834-79AC9282C128}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Interpreter</RootNamespace>
+    <AssemblyName>Interpreter</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="backend\Backend.cs" />
+    <Compile Include="backend\BackendFactory.cs" />
+    <Compile Include="backend\compiler\CodeGenerator.cs" />
+    <Compile Include="backend\interpreter\Executor.cs" />
+    <Compile Include="frontend\EofToken.cs" />
+    <Compile Include="frontend\FrontendFactory.cs" />
+    <Compile Include="frontend\Parser.cs" />
+    <Compile Include="frontend\pascal\PascalErrorCode.cs" />
+    <Compile Include="frontend\pascal\PascalErrorHandler.cs" />
+    <Compile Include="frontend\pascal\PascalParserTD.cs" />
+    <Compile Include="frontend\pascal\PascalScanner.cs" />
+    <Compile Include="frontend\pascal\PascalToken.cs" />
+    <Compile Include="frontend\pascal\PascalTokenType.cs" />
+    <Compile Include="frontend\pascal\tokens\PascalNumberToken.cs" />
+    <Compile Include="frontend\pascal\tokens\PascalSpecialSymbolToken.cs" />
+    <Compile Include="frontend\pascal\tokens\PascalStringToken.cs" />
+    <Compile Include="frontend\pascal\tokens\PascalWordToken.cs" />
+    <Compile Include="frontend\pascal\tokens\PascalErrorToken.cs" />
+    <Compile Include="frontend\Scanner.cs" />
+    <Compile Include="frontend\Source.cs" />
+    <Compile Include="frontend\Token.cs" />
+    <Compile Include="frontend\TokenType.cs" />
+    <Compile Include="intermediate\ICode.cs" />
+    <Compile Include="intermediate\SymbolTable.cs" />
+    <Compile Include="intermediate\SymbolTableEntry.cs" />
+    <Compile Include="intermediate\SymbolTableFactory.cs" />
+    <Compile Include="intermediate\SymbolTableImplementation\SymbolTableImplementation.cs" />
+    <Compile Include="intermediate\SymbolTableImplementation\SymbolTableStackImplementation.cs" />
+    <Compile Include="intermediate\SymbolTableKey.cs" />
+    <Compile Include="intermediate\SymbolTableStack.cs" />
+    <Compile Include="Pascal.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="message\Message.cs" />
+    <Compile Include="message\MessageHandler.cs" />
+    <Compile Include="message\MessageListener.cs" />
+    <Compile Include="message\MessageProducer.cs" />
+    <Compile Include="message\MessageType.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
