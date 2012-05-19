@@ -8,6 +8,7 @@ using Interpreter.frontend.pascal;
 using Interpreter.intermediate;
 using Interpreter.backend;
 using Interpreter.message;
+using Interpreter.util;
 
 namespace Interpreter
 {
@@ -16,7 +17,7 @@ namespace Interpreter
         private Parser parser;    // language independent parser
         private Source source;    // language independent scanner
         private ICode iCode;      // generated intermediate code
-        private SymbolTable symTab;    // generated symbol table
+        private SymbolTableStack symbolTableStack;
         private Backend backend;  // backend
 
         public Pascal(string operation, string filePath, string flags)
@@ -39,9 +40,15 @@ namespace Interpreter
                 source.close();
 
                 iCode = parser.iCode;
-                symTab = Parser.symTab;
+                symbolTableStack = Parser.symbolTableStack;
 
-                backend.process(iCode, symTab);
+                if (xref)
+                {
+                    CrossReferencer crossReferencer = new CrossReferencer();
+                    crossReferencer.Print(symbolTableStack);
+                }
+
+                backend.process(iCode, symbolTableStack);
             }
 
             catch (Exception e)
@@ -78,7 +85,7 @@ namespace Interpreter
                 else
                     throw new Exception();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine(USAGE);
             }
@@ -124,7 +131,7 @@ namespace Interpreter
                 {
                     case MessageType.PARSER_SUMMARY:
                         {
-                            Object[] body = (Object[])message.body;
+                            IConvertible[] body = (IConvertible[])message.body;
                             int statementCount = (int)body[0];
                             int syntaxErrors = (int)body[1];
                             float elapsedTime = (float)body[2];

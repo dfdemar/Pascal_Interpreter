@@ -11,13 +11,13 @@ namespace Interpreter.frontend
         public string text { get; protected set; } // token text
         public Object value { get; protected set; } // token value
         public Source source { get; protected set; } // source
-        public int lineNum { get; protected set; } // line number of the token's source line
+        public int lineNumber { get; protected set; } // line number of the token's source line
         public int position { get; protected set; } // position of the first token character
 
         public Token(Source source)
         {
             this.source = source;
-            this.lineNum = source.lineNum;
+            this.lineNumber = source.lineNum;
             this.position = source.currentPos;
 
             extract();

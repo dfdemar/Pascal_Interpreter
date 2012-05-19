@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Interpreter.frontend;
 using Interpreter.message;
+using Interpreter.intermediate;
 
 namespace Interpreter.frontend.pascal
 {
@@ -25,22 +26,28 @@ namespace Interpreter.frontend.pascal
                 while (!((token = nextToken()) is EofToken))
                 {
                     TokenType tokenType = token.type;
-                    if (tokenType != PascalTokenType.ERROR)
+
+                    if (tokenType == PascalTokenType.IDENTIFIER)
                     {
-                        // format each token
-                        sendMessage(new Message(MessageType.TOKEN, new Object[]{token.lineNum,
-                                                                                         token.position,
-                                                                                         tokenType,
-                                                                                         token.text,
-                                                                                         token.value}));
+                        // Cross reference only the identifiers
+                        string name = token.text.ToLower();
+
+                        // If it's not already in the symbol table,
+                        // create and enter a new entry for the identifier.
+                        SymbolTableEntry entry = symbolTableStack.Lookup(name);
+                        if (entry == null)
+                            entry = symbolTableStack.EnterLocal(name);
+
+                        // Append the current line number to the entry.
+                        entry.AppendLineNumber(token.lineNumber);
                     }
-                    else
+                    else if (tokenType == PascalTokenType.ERROR)
                         errorHandler.flag(token, (PascalErrorCode)token.value, this);
                 }
 
-                float elapsedTime = (DateTime.Now.Ticks - startTime) / 100000f;
+                float elapsedTime = (DateTime.Now.Ticks - startTime) / 10000000f;
                 sendMessage(new Message(MessageType.PARSER_SUMMARY,
-                                        new IConvertible[] { token.lineNum, getErrorCount(), elapsedTime }));
+                                        new IConvertible[] { token.lineNumber, getErrorCount(), elapsedTime }));
             }
             catch (System.IO.IOException e)
             {
@@ -50,7 +57,7 @@ namespace Interpreter.frontend.pascal
 
         public override int getErrorCount()
         {
-            return 0;
+            return PascalErrorHandler.errorCount;
         }
     }
 }

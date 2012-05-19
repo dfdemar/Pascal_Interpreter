@@ -9,7 +9,7 @@ namespace Interpreter.frontend
 {
     public abstract class Parser : MessageProducer
     {
-        public static SymbolTableStack symbolTableStack { get; protected set; }    // Generate symbol table
+        public static SymbolTableStack symbolTableStack { get; protected set; }    // Symbol table stack
         protected static MessageHandler messageHandler;        // Message handler delegate
 
         public Scanner scanner { get; protected set; }

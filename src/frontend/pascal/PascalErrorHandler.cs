@@ -9,12 +9,17 @@ namespace Interpreter.frontend.pascal
     public class PascalErrorHandler
     {
         private static readonly int MAX_ERRORS = 25;
-        private static int errorCount = 0; // syntax error count
+        public static int errorCount { get; private set; } // syntax error count
+
+        static PascalErrorHandler()
+        {
+            errorCount = 0;
+        }
 
         public void flag(Token token, PascalErrorCode errorCode, Parser parser)
         {
             // Notify parser's listeners
-            parser.sendMessage(new Message(MessageType.SYNTAX_ERROR, new Object[] { token.lineNum,
+            parser.sendMessage(new Message(MessageType.SYNTAX_ERROR, new Object[] { token.lineNumber,
                                                                                     token.position,
                                                                                     token.text,
                                                                                     errorCode.ToString()}));

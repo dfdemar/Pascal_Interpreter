@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Interpreter.intermediate.SymbolTableImplementation;
 
 namespace Interpreter.intermediate
 {
@@ -14,7 +15,7 @@ namespace Interpreter.intermediate
 
         public static SymbolTable CreateSymbolTable(int nestingLevel)
         {
-            return new SymbolTableImplementation();
+            return new SymbolTableImplementation.SymbolTableImplementation(nestingLevel);
         }
 
         public static SymbolTableEntry CreateSymbolTableEntry(string name, SymbolTable symboltable)

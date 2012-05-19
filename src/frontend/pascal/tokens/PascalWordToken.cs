@@ -24,8 +24,8 @@ namespace Interpreter.frontend.pascal.tokens
             }
 
             text = textBuffer.ToString();
-            type = (PascalTokenType.RESERVED_WORDS.Contains(text.ToLower()) ? (TokenType)Enum.Parse(typeof(PascalTokenType), text)
-                                                                            : (TokenType)PascalTokenType.IDENTIFIER);
+            type = (PascalTokenType.RESERVED_WORDS.ContainsKey(text.ToLower()) ? (TokenType)PascalTokenType.RESERVED_WORDS[text.ToLower()]
+                                                                               : (TokenType)PascalTokenType.IDENTIFIER);
         }
     }
 }

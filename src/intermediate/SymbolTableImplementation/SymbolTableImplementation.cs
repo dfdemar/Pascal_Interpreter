@@ -22,15 +22,21 @@ namespace Interpreter.intermediate.SymbolTableImplementation
             return entry;
         }
 
+        //  Look up an existing symbol table entry. Null if it does not exist.
         public SymbolTableEntry Lookup(string name)
         {
-            return this[name];
+            return (ContainsKey(name) ? this[name] : null);
         }
 
         // Return a list of symbol table entries sorted by name.
         public List<SymbolTableEntry> SortedEntries()
         {
+            ICollection<SymbolTableEntry> entries = this.Values;
+            List<SymbolTableEntry> list = new List<SymbolTableEntry>(Count);
+            foreach (SymbolTableEntry entry in entries)
+                list.Add(entry);
 
+            return list;
         }
     }
 }

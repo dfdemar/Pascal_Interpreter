@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Interpreter.intermediate
 {
-    interface SymbolTableKey
+    public interface SymbolTableKey
     {
     }
 }

@@ -79,7 +79,7 @@ namespace Interpreter.frontend.pascal
         public static readonly PascalTokenType END_OF_FILE = new PascalTokenType("END_OF_FILE");
 
         // Set of lower-cased Pascal reserved word text strings.
-        public static readonly HashSet<string> RESERVED_WORDS = new HashSet<string>();
+        public static readonly Dictionary<string, PascalTokenType> RESERVED_WORDS = new Dictionary<string, PascalTokenType>();
 
         // Dictionary of Pascal special symbols. Each special symbol's text
         // is the key to its Pascal token type.
@@ -87,41 +87,41 @@ namespace Interpreter.frontend.pascal
 
         static PascalTokenType()
         {
-            RESERVED_WORDS.Add(AND.name);
-            RESERVED_WORDS.Add(ARRAY.name);
-            RESERVED_WORDS.Add(BEGIN.name);
-            RESERVED_WORDS.Add(CASE.name);
-            RESERVED_WORDS.Add(CONST.name);
-            RESERVED_WORDS.Add(DIV.name);
-            RESERVED_WORDS.Add(DO.name);
-            RESERVED_WORDS.Add(DOWNTO.name);
-            RESERVED_WORDS.Add(ELSE.name);
-            RESERVED_WORDS.Add(END.name);
-            RESERVED_WORDS.Add(FILE.name);
-            RESERVED_WORDS.Add(FOR.name);
-            RESERVED_WORDS.Add(FUNCTION.name);
-            RESERVED_WORDS.Add(GOTO.name);
-            RESERVED_WORDS.Add(IF.name);
-            RESERVED_WORDS.Add(IN.name);
-            RESERVED_WORDS.Add(LABEL.name);
-            RESERVED_WORDS.Add(MOD.name);
-            RESERVED_WORDS.Add(NIL.name);
-            RESERVED_WORDS.Add(NOT.name);
-            RESERVED_WORDS.Add(OF.name);
-            RESERVED_WORDS.Add(OR.name);
-            RESERVED_WORDS.Add(PACKED.name);
-            RESERVED_WORDS.Add(PROCEDURE.name);
-            RESERVED_WORDS.Add(PROGRAM.name);
-            RESERVED_WORDS.Add(RECORD.name);
-            RESERVED_WORDS.Add(REPEAT.name);
-            RESERVED_WORDS.Add(SET.name);
-            RESERVED_WORDS.Add(THEN.name);
-            RESERVED_WORDS.Add(TO.name);
-            RESERVED_WORDS.Add(TYPE.name);
-            RESERVED_WORDS.Add(UNTIL.name);
-            RESERVED_WORDS.Add(VAR.name);
-            RESERVED_WORDS.Add(WHILE.name);
-            RESERVED_WORDS.Add(WITH.name);
+            RESERVED_WORDS.Add(AND.name.ToLower(), AND);
+            RESERVED_WORDS.Add(ARRAY.name.ToLower(), ARRAY);
+            RESERVED_WORDS.Add(BEGIN.name.ToLower(), BEGIN);
+            RESERVED_WORDS.Add(CASE.name.ToLower(), CASE);
+            RESERVED_WORDS.Add(CONST.name.ToLower(), CONST);
+            RESERVED_WORDS.Add(DIV.name.ToLower(), DIV);
+            RESERVED_WORDS.Add(DO.name.ToLower(), DO);
+            RESERVED_WORDS.Add(DOWNTO.name.ToLower(), DOWNTO);
+            RESERVED_WORDS.Add(ELSE.name.ToLower(), ELSE);
+            RESERVED_WORDS.Add(END.name.ToLower(), END);
+            RESERVED_WORDS.Add(FILE.name.ToLower(), FILE);
+            RESERVED_WORDS.Add(FOR.name.ToLower(), FOR);
+            RESERVED_WORDS.Add(FUNCTION.name.ToLower(), FUNCTION);
+            RESERVED_WORDS.Add(GOTO.name.ToLower(), GOTO);
+            RESERVED_WORDS.Add(IF.name.ToLower(), IF);
+            RESERVED_WORDS.Add(IN.name.ToLower(), IN);
+            RESERVED_WORDS.Add(LABEL.name.ToLower(), LABEL);
+            RESERVED_WORDS.Add(MOD.name.ToLower(), MOD);
+            RESERVED_WORDS.Add(NIL.name.ToLower(), NIL);
+            RESERVED_WORDS.Add(NOT.name.ToLower(), NOT);
+            RESERVED_WORDS.Add(OF.name.ToLower(), OF);
+            RESERVED_WORDS.Add(OR.name.ToLower(), OR);
+            RESERVED_WORDS.Add(PACKED.name.ToLower(), PACKED);
+            RESERVED_WORDS.Add(PROCEDURE.name.ToLower(), PROCEDURE);
+            RESERVED_WORDS.Add(PROGRAM.name.ToLower(), PROGRAM);
+            RESERVED_WORDS.Add(RECORD.name.ToLower(), RECORD);
+            RESERVED_WORDS.Add(REPEAT.name.ToLower(), REPEAT);
+            RESERVED_WORDS.Add(SET.name.ToLower(), SET);
+            RESERVED_WORDS.Add(THEN.name.ToLower(), THEN);
+            RESERVED_WORDS.Add(TO.name.ToLower(), TO);
+            RESERVED_WORDS.Add(TYPE.name.ToLower(), TYPE);
+            RESERVED_WORDS.Add(UNTIL.name.ToLower(), UNTIL);
+            RESERVED_WORDS.Add(VAR.name.ToLower(), VAR);
+            RESERVED_WORDS.Add(WHILE.name.ToLower(), WHILE);
+            RESERVED_WORDS.Add(WITH.name.ToLower(), WITH);
 
             SPECIAL_SYMBOLS.Add(PLUS.text, PLUS);
             SPECIAL_SYMBOLS.Add(MINUS.text, MINUS);
