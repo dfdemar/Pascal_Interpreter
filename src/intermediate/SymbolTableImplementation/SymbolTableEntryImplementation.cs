@@ -24,6 +24,11 @@ namespace Interpreter.intermediate.SymbolTableImplementation
             return name;
         }
 
+        public SymbolTable GetSymbolTable()
+        {
+            return symbolTable;
+        }
+
         public void AppendLineNumber(int lineNumber)
         {
             lineNumbers.Add(lineNumber);

@@ -8,11 +8,16 @@ namespace Interpreter.intermediate.SymbolTableImplementation
 {
     public class SymbolTableImplementation : SortedList<string, SymbolTableEntry>, SymbolTable
     {
-        public int NestingLevel { get; private set; }
+        private int NestingLevel;
 
         public SymbolTableImplementation(int NestingLevel)
         {
             this.NestingLevel = NestingLevel;
+        }
+
+        public int GetNestingLevel()
+        {
+            return NestingLevel;
         }
 
         public SymbolTableEntry Enter(string name)

@@ -12,7 +12,7 @@ namespace Interpreter.frontend.pascal
     {
         protected static PascalErrorHandler errorHandler = new PascalErrorHandler();
 
-        public PascalParserTD(Scanner scanner):base(scanner)
+        public PascalParserTD(PascalParserTD parent):base(parent.scanner)
         {
         }
 

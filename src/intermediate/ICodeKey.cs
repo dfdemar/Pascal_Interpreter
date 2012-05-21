@@ -5,9 +5,7 @@ using System.Text;
 
 namespace Interpreter.intermediate
 {
-    public interface ICode
+    public interface ICodeKey
     {
-        public ICodeNode SetRoot(ICodeNode node);
-        public ICodeNode GetRoot();
     }
 }
