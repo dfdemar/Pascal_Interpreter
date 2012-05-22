@@ -16,35 +16,38 @@ namespace Interpreter.frontend.pascal
         {
         }
 
+        // Parse a Pascal source program and generate the symbol table and the intermediate code.
         public override void parse()
         {
-            Token token;
             long startTime = DateTime.Now.Ticks;
+            iCode = ICodeFactory.CreateICode();
 
             try
             {
-                while (!((token = nextToken()) is EofToken))
+                Token token = nextToken();
+                ICodeNode rootNode = null;
+
+                // Look for the BEGIN token to parse a compound statement.
+                if (token.type == PascalTokenType.BEGIN)
                 {
-                    TokenType tokenType = token.type;
-
-                    if (tokenType == PascalTokenType.IDENTIFIER)
-                    {
-                        // Cross reference only the identifiers
-                        string name = token.text.ToLower();
-
-                        // If it's not already in the symbol table,
-                        // create and enter a new entry for the identifier.
-                        SymbolTableEntry entry = symbolTableStack.Lookup(name);
-                        if (entry == null)
-                            entry = symbolTableStack.EnterLocal(name);
-
-                        // Append the current line number to the entry.
-                        entry.AppendLineNumber(token.lineNumber);
-                    }
-                    else if (tokenType == PascalTokenType.ERROR)
-                        errorHandler.flag(token, (PascalErrorCode)token.value, this);
+                    StatementParser statementParser = new StatementParser(this);
+                    rootNode = statementParser.parse(token);
+                    token = CurrentToken();
                 }
+                else
+                    errorHandler.flag(token, PascalErrorCode.UNEXPECTED_TOKEN, this);
 
+                // Look for the final period.
+                if (token.type != PascalTokenType.DOT)
+                    errorHandler.flag(token, PascalErrorCode.MISSING_PERIOD, this);
+
+                token = CurrentToken();
+
+                // Set parse tree root node.
+                if (rootNode != null)
+                    iCode.SetRoot(rootNode);
+
+                // Send parser summary message.
                 float elapsedTime = (DateTime.Now.Ticks - startTime) / 10000000f;
                 sendMessage(new Message(MessageType.PARSER_SUMMARY,
                                         new IConvertible[] { token.lineNumber, getErrorCount(), elapsedTime }));

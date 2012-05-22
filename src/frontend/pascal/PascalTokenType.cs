@@ -163,6 +163,11 @@ namespace Interpreter.frontend.pascal
             this.text = text;
         }
 
+        public string GetName()
+        {
+            return this.name;
+        }
+
         public override string ToString()
         {
             return this.name;

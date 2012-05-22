@@ -30,7 +30,7 @@ namespace Interpreter.frontend
         public abstract void parse();
         public abstract int getErrorCount();
 
-        public Token getCurrentToken()
+        public Token CurrentToken()
         {
             return scanner.currentToken;
         }
@@ -54,6 +54,5 @@ namespace Interpreter.frontend
        {
             messageHandler.sendMessage(message);
        }
-
     }
 }

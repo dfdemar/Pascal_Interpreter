@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Interpreter.intermediate.ICodeImplementation;
 
 namespace Interpreter.intermediate
 {
@@ -10,7 +11,7 @@ namespace Interpreter.intermediate
         // Create and return an intermediate code implementation.
         public static ICode CreateICode()
         {
-            return new ICodeImplementation();
+            return new ICodeImplementation.ICodeImplementation();
         }
 
         // Create and return a node implementation.

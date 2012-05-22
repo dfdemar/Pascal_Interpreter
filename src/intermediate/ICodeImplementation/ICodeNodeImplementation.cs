@@ -53,7 +53,7 @@ namespace Interpreter.intermediate.ICodeImplementation
             return copy;
         }
 
-        public string ToString()
+        public override string ToString()
         {
             return type.ToString();
         }
