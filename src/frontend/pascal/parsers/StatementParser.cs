@@ -70,7 +70,7 @@ namespace Interpreter.frontend.pascal.parsers
 
                 // Look for semicolon between statements.
                 if (tokenType == PascalTokenType.SEMICOLON)
-                    token = nextToken();
+                    token = NextToken();
 
                 // If at the start of the next assignment statement, then missing a semicolon.
                 else if (tokenType == PascalTokenType.IDENTIFIER)
@@ -78,7 +78,7 @@ namespace Interpreter.frontend.pascal.parsers
             }
 
             if (token.type == terminator)
-                token = nextToken();
+                token = NextToken();
             else
                 errorHandler.flag(token, errorCode, this);
         }

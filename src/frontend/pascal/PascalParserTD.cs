@@ -24,7 +24,7 @@ namespace Interpreter.frontend.pascal
 
             try
             {
-                Token token = nextToken();
+                Token token = NextToken();
                 ICodeNode rootNode = null;
 
                 // Look for the BEGIN token to parse a compound statement.

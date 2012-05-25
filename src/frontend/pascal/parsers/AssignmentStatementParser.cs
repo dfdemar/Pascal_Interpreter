@@ -26,14 +26,14 @@ namespace Interpreter.frontend.pascal.parsers
                 targetID = symbolTableStack.EnterLocal(targetName);
 
             targetID.AppendLineNumber(token.lineNumber);
-            token = nextToken();
+            token = NextToken();
 
             ICodeNode variableNode = ICodeFactory.CreateICodeNode(ICodeNodeTypeImplementation.VARIABLE);
             variableNode.SetAttribute(ICodeKeyImplementation.ID, targetID);
             assignNode.AddChild(variableNode);
 
             if (token.type == PascalTokenType.COLON_EQUALS)
-                token = nextToken();
+                token = NextToken();
             else
                 errorHandler.flag(token, PascalErrorCode.MISSING_COLON_EQUALS, this);
 

@@ -16,7 +16,7 @@ namespace Interpreter.frontend.pascal.parsers
         // Parse a compound statement.
         public ICodeNode Parse(Token token)
         {
-            token = nextToken();
+            token = NextToken();
 
             // Create the compound node.
             ICodeNode compoundNode = ICodeFactory.CreateICodeNode(ICodeNodeTypeImplementation.COMPOUND);

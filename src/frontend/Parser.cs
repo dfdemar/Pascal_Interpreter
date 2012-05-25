@@ -35,7 +35,7 @@ namespace Interpreter.frontend
             return scanner.currentToken;
         }
 
-        public Token nextToken()
+        public Token NextToken()
         {
             return scanner.nextToken();
         }
