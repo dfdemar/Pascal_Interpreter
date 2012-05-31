@@ -13,15 +13,15 @@ namespace Interpreter.util
         private static readonly int INDENT_WIDTH = 4;
         private static readonly int LINE_WIDTH = 80;
 
-        private StreamWriter sw;
+        private TextWriter tw;
         private int length;
         private string indent;
         private string indentation;
         private StringBuilder line;
 
-        public ParseTreePrinter(StreamWriter sw)
+        public ParseTreePrinter(TextWriter tw)
         {
-            this.sw = sw;
+            this.tw = tw;
             this.length = 0;
             this.indentation = "";
             this.line = new StringBuilder();
@@ -33,7 +33,7 @@ namespace Interpreter.util
 
         public void Print(ICode iCode)
         {
-            sw.WriteLine("\n===== INTERMEDIATE CODE =====\n");
+            tw.WriteLine("\n===== INTERMEDIATE CODE =====\n");
             PrintNode((ICodeNodeImplementation)iCode.GetRoot());
             PrintLine();
         }
@@ -134,7 +134,7 @@ namespace Interpreter.util
         {
             if (length > 0)
             {
-                sw.WriteLine(line);
+                tw.WriteLine(line);
                 line.Length = 0;
                 length = 0;
             }

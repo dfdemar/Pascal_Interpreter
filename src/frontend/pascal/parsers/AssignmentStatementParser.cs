@@ -14,7 +14,7 @@ namespace Interpreter.frontend.pascal.parsers
         {
         }
 
-        public ICodeNode Parse(Token token)
+        public override ICodeNode Parse(Token token)
         {
             // Create the ASSIGN node.
             ICodeNode assignNode = ICodeFactory.CreateICodeNode(ICodeNodeTypeImplementation.ASSIGN);

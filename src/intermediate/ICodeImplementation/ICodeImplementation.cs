@@ -7,11 +7,16 @@ namespace Interpreter.intermediate.ICodeImplementation
 {
     public class ICodeImplementation : ICode
     {
-        private ICodeNode root;
+        public ICodeNode root { get; private set; }
 
         public ICodeNode SetRoot(ICodeNode node)
         {
             root = node;
+            return root;
+        }
+
+        public ICodeNode GetRoot()
+        {
             return root;
         }
     }

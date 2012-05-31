@@ -33,6 +33,7 @@ namespace Interpreter.frontend.pascal.tokens
                 {
                     currentchar = nextChar();
                     if (currentchar == '=')
+                        text += currentchar;
                         nextChar();
                     break;
                 }

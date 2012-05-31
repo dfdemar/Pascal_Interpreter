@@ -14,7 +14,7 @@ namespace Interpreter.frontend.pascal.parsers
         }
 
         // Parse a compound statement.
-        public ICodeNode Parse(Token token)
+        public override ICodeNode Parse(Token token)
         {
             token = NextToken();
 

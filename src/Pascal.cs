@@ -48,6 +48,11 @@ namespace Interpreter
                     crossReferencer.Print(symbolTableStack);
                 }
 
+                if (intermediate) 
+                {
+                    ParseTreePrinter treePrinter =  new ParseTreePrinter(Console.Out);
+                    treePrinter.Print(iCode);
+                }
                 backend.process(iCode, symbolTableStack);
             }
 

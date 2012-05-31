@@ -8,6 +8,6 @@ namespace Interpreter.intermediate
     public interface ICode
     {
         ICodeNode SetRoot(ICodeNode node);
-        //ICodeNode GetRoot();
+        ICodeNode GetRoot();
     }
 }

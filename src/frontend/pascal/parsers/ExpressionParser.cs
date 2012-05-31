@@ -10,13 +10,12 @@ namespace Interpreter.frontend.pascal.parsers
 {
     public class ExpressionParser : StatementParser
     {
-        private static readonly HashSet<PascalTokenType> REL_OPS = new HashSet<PascalTokenType>();  // Set of relational operators.
-        private static readonly HashSet<PascalTokenType> ADD_OPS = new HashSet<PascalTokenType>();  // Set of additive operators.
-        private static readonly HashSet<PascalTokenType> MULT_OPS = new HashSet<PascalTokenType>(); // Set of multiplicative operators.
-
-        private static readonly Dictionary<PascalTokenType, ICodeNodeType> REL_OPS_MAP = new Dictionary<PascalTokenType, ICodeNodeType>();  // Map relational operator tokens to node types.
-        private static readonly Dictionary<PascalTokenType, ICodeNodeTypeImplementation> ADD_OPS_OPS_MAP = new Dictionary<PascalTokenType, ICodeNodeTypeImplementation>();  // Map additive operator tokens to node types.
-        private static readonly Dictionary<PascalTokenType, ICodeNodeType> MULT_OPS_OPS_MAP = new Dictionary<PascalTokenType, ICodeNodeType>();  // Map multiplicative operator tokens to node types.
+        private static readonly List<PascalTokenType> REL_OPS = new List<PascalTokenType>();
+        private static readonly List<PascalTokenType> ADD_OPS = new List<PascalTokenType>();
+        private static readonly List<PascalTokenType> MULT_OPS = new List<PascalTokenType>();
+        private static readonly Dictionary<PascalTokenType, ICodeNodeType> REL_OPS_MAP = new Dictionary<PascalTokenType, ICodeNodeType>();
+        private static readonly Dictionary<PascalTokenType, ICodeNodeTypeImplementation> ADD_OPS_OPS_MAP = new Dictionary<PascalTokenType, ICodeNodeTypeImplementation>();
+        private static readonly Dictionary<PascalTokenType, ICodeNodeType> MULT_OPS_OPS_MAP = new Dictionary<PascalTokenType, ICodeNodeType>();
 
         public ExpressionParser(PascalParserTD parent) : base(parent)
         {
@@ -59,7 +58,7 @@ namespace Interpreter.frontend.pascal.parsers
             MULT_OPS_OPS_MAP.Add(PascalTokenType.AND, ICodeNodeTypeImplementation.AND);
         }
 
-        public ICodeNode Parse(Token token)
+        public override ICodeNode Parse(Token token)
         {
             return ParseExpression(token);
         }
@@ -79,12 +78,7 @@ namespace Interpreter.frontend.pascal.parsers
                 opNode.AddChild(rootNode);
 
                 token = NextToken();
-
-                // Parse the second simple expression.  The operator node adopts
-                // the simple expression's tree as its second child.
                 opNode.AddChild(ParseSimpleExpression(token));
-
-                // The operator node becomes the new root node.
                 rootNode = opNode;
             }
 
@@ -93,35 +87,35 @@ namespace Interpreter.frontend.pascal.parsers
 
         private ICodeNode ParseSimpleExpression(Token token)
         {
-            TokenType signType = null; // type of leading sign, if any
+            TokenType signType = null;  // type of leading sign (if any)
 
-            // Looking for a leading + or - sign
+            // Look for a leading + or - sign.
             TokenType tokenType = token.type;
-
             if ((tokenType == PascalTokenType.PLUS) || (tokenType == PascalTokenType.MINUS))
             {
                 signType = tokenType;
-                token = NextToken();
+                token = NextToken();  // consume the + or -
             }
 
             // Parse a term and make the root of its tree the root node.
             ICodeNode rootNode = ParseTerm(token);
 
-            // Was there a leading minus sign?
+            // Was there a leading - sign?
             if (signType == PascalTokenType.MINUS)
             {
+
                 // Create a NEGATE node and adopt the current tree
                 // as its child. The NEGATE node becomes the new root node.
-
                 ICodeNode negateNode = ICodeFactory.CreateICodeNode(ICodeNodeTypeImplementation.NEGATE);
                 negateNode.AddChild(rootNode);
                 rootNode = negateNode;
             }
 
             token = CurrentToken();
+            tokenType = token.type;
 
             // Loop over additive operators.
-            while(ADD_OPS.Contains(tokenType))
+            while (ADD_OPS.Contains(tokenType))
             {
                 // Create a new operator node and adopt the current tree
                 // as its first child.
@@ -145,30 +139,20 @@ namespace Interpreter.frontend.pascal.parsers
             return rootNode;
         }
 
-        private ICodeNode parseTerm(Token token)
+        private ICodeNode ParseTerm(Token token)
         {
-            // Parse a factor and make its node the root node.
             ICodeNode rootNode = ParseFactor(token);
-
-            token = CurrentToken();
             TokenType tokenType = token.type;
 
-            // Loop over multiplicative operators.
-            while (MULT_OPS.Contains(tokenType)) 
+
+            while (MULT_OPS.Contains(tokenType))
             {
-                // Create a new operator node and adopt the current tree
-                // as its first child.
                 ICodeNodeType nodeType = MULT_OPS_OPS_MAP[(PascalTokenType)tokenType];
                 ICodeNode opNode = ICodeFactory.CreateICodeNode(nodeType);
                 opNode.AddChild(rootNode);
 
                 token = NextToken();
-
-                // Parse another factor.  The operator node adopts
-                // the term's tree as its second child.
                 opNode.AddChild(ParseFactor(token));
-
-                // The operator node becomes the new root node.
                 rootNode = opNode;
 
                 token = CurrentToken();
@@ -178,23 +162,20 @@ namespace Interpreter.frontend.pascal.parsers
             return rootNode;
         }
 
-        private ICodeNode parseFactor(Token token)
-        
+        private ICodeNode ParseFactor(Token token)
         {
             TokenType tokenType = token.type;
             ICodeNode rootNode = null;
 
             switch (tokenType.ToString()) 
             {
-
                 case "IDENTIFIER": 
                 {
                     // Look up the identifier in the symbol table stack.
                     // Flag the identifier as undefined if it's not found.
                     String name = token.text.ToLower();
                     SymbolTableEntry id = symbolTableStack.Lookup(name);
-
-                    if (id == null) 
+                    if (id == null)
                     {
                         errorHandler.flag(token, PascalErrorCode.IDENTIFIER_UNDEFINED, this);
                         id = symbolTableStack.EnterLocal(name);
@@ -204,7 +185,7 @@ namespace Interpreter.frontend.pascal.parsers
                     rootNode.SetAttribute(ICodeKeyImplementation.ID, id);
                     id.AppendLineNumber(token.lineNumber);
 
-                    token = NextToken();
+                    token = NextToken();  // consume the identifier
                     break;
                 }
 
@@ -214,7 +195,7 @@ namespace Interpreter.frontend.pascal.parsers
                     rootNode = ICodeFactory.CreateICodeNode(ICodeNodeTypeImplementation.INTEGER_CONSTANT);
                     rootNode.SetAttribute(ICodeKeyImplementation.VALUE, token.value);
 
-                    token = NextToken();
+                    token = NextToken();  // consume the number
                     break;
                 }
 
@@ -224,11 +205,11 @@ namespace Interpreter.frontend.pascal.parsers
                     rootNode = ICodeFactory.CreateICodeNode(ICodeNodeTypeImplementation.REAL_CONSTANT);
                     rootNode.SetAttribute(ICodeKeyImplementation.VALUE, token.value);
 
-                    token = NextToken(); 
+                    token = NextToken();  // consume the number
                     break;
                 }
 
-                case "STRING":
+                case "STRING": 
                 {
                     String value = (String) token.value;
 
@@ -236,27 +217,27 @@ namespace Interpreter.frontend.pascal.parsers
                     rootNode = ICodeFactory.CreateICodeNode(ICodeNodeTypeImplementation.STRING_CONSTANT);
                     rootNode.SetAttribute(ICodeKeyImplementation.VALUE, value);
 
-                    token = NextToken();
+                    token = NextToken();  // consume the string
                     break;
                 }
 
-                case "NOT":
+                case "NOT": 
                 {
-                    token = NextToken();
+                    token = NextToken();  // consume the NOT
 
                     // Create a NOT node as the root node.
                     rootNode = ICodeFactory.CreateICodeNode(ICodeNodeTypeImplementation.NOT);
 
                     // Parse the factor.  The NOT node adopts the
                     // factor node as its child.
-                    rootNode.AddChild(parseFactor(token));
+                    rootNode.AddChild(ParseFactor(token));
 
                     break;
                 }
 
                 case "LEFT_PAREN": 
                 {
-                    token = NextToken();
+                    token = NextToken();      // consume the (
 
                     // Parse an expression and make its node the root node.
                     rootNode = ParseExpression(token);
@@ -264,14 +245,9 @@ namespace Interpreter.frontend.pascal.parsers
                     // Look for the matching ) token.
                     token = CurrentToken();
                     if (token.type == PascalTokenType.RIGHT_PAREN) 
-                    {
-                        token = NextToken();
-                    }
-                    else 
-                    {
+                        token = NextToken();  // consume the )
+                    else
                         errorHandler.flag(token, PascalErrorCode.MISSING_RIGHT_PAREN, this);
-                    }
-
                     break;
                 }
 
@@ -283,6 +259,6 @@ namespace Interpreter.frontend.pascal.parsers
             }
 
             return rootNode;
-       }
+        }
     }
 }

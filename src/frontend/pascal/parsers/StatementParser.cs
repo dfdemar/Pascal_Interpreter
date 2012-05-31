@@ -14,7 +14,7 @@ namespace Interpreter.frontend.pascal.parsers
         }
 
         // Parse a statement.
-        public ICodeNode Parse(Token token)
+        public virtual ICodeNode Parse(Token token)
         {
             ICodeNode statementNode = null;
 
@@ -23,7 +23,7 @@ namespace Interpreter.frontend.pascal.parsers
                 case "BEGIN":
                     {
                         CompoundStatementParser compoundParser = new CompoundStatementParser(this);
-                        statementNode = compoundParser.parse(token);
+                        statementNode = compoundParser.Parse(token);
                         break;
                     }
 
@@ -32,13 +32,13 @@ namespace Interpreter.frontend.pascal.parsers
                     {
                         AssignmentStatementParser assignmentParser =
                             new AssignmentStatementParser(this);
-                        statementNode = assignmentParser.parse(token);
+                        statementNode = assignmentParser.Parse(token);
                         break;
                     }
 
                 default:
                     {
-                        statementNode = ICodeFactory.createICodeNode(NO_OP);
+                        statementNode = ICodeFactory.CreateICodeNode(ICodeNodeTypeImplementation.NO_OP);
                         break;
                     }
             }
@@ -75,6 +75,12 @@ namespace Interpreter.frontend.pascal.parsers
                 // If at the start of the next assignment statement, then missing a semicolon.
                 else if (tokenType == PascalTokenType.IDENTIFIER)
                     errorHandler.flag(token, PascalErrorCode.MISSING_SEMICOLON, this);
+
+                else if (tokenType != terminator)
+                {
+                    errorHandler.flag(token, PascalErrorCode.UNEXPECTED_TOKEN, this);
+                    token = NextToken();
+                }
             }
 
             if (token.type == terminator)

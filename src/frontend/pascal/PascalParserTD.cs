@@ -5,6 +5,7 @@ using System.Text;
 using Interpreter.frontend;
 using Interpreter.message;
 using Interpreter.intermediate;
+using Interpreter.frontend.pascal.parsers;
 
 namespace Interpreter.frontend.pascal
 {
@@ -12,7 +13,11 @@ namespace Interpreter.frontend.pascal
     {
         protected static PascalErrorHandler errorHandler = new PascalErrorHandler();
 
-        public PascalParserTD(PascalParserTD parent):base(parent.scanner)
+        public PascalParserTD(Scanner scanner) : base(scanner)
+        {
+        }
+
+        public PascalParserTD(PascalParserTD parent) : base(parent.scanner)
         {
         }
 
@@ -31,7 +36,7 @@ namespace Interpreter.frontend.pascal
                 if (token.type == PascalTokenType.BEGIN)
                 {
                     StatementParser statementParser = new StatementParser(this);
-                    rootNode = statementParser.parse(token);
+                    rootNode = statementParser.Parse(token);
                     token = CurrentToken();
                 }
                 else
