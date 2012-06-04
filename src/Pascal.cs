@@ -68,6 +68,7 @@ namespace Interpreter
 
         public static void Main(string[] args)
         {
+            Console.SetOut(new DebuggerWriter());
             try
             {
                 string operation = args[0];

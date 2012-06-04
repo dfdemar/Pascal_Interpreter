@@ -72,6 +72,8 @@ namespace Interpreter.util
 
             foreach (KeyValuePair<ICodeKey, Object> KVP in node)
                 PrintAttribute(KVP.Key.ToString(), KVP.Value);
+
+            indentation = saveIndentation;
         }
 
         private void PrintAttribute(string keyString, Object value)
@@ -80,6 +82,8 @@ namespace Interpreter.util
             // Else just use the value string.
             bool isSymbolTableEntry = value is SymbolTableEntry;
             string valueString = isSymbolTableEntry ? ((SymbolTableEntry)value).GetName() : value.ToString();
+            string text = keyString.ToLower() + "=\"" + valueString + "\"";
+            Append(" " + text);
 
             // Include an identifier's nesting level.
             if (isSymbolTableEntry)

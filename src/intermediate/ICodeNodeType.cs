@@ -7,5 +7,6 @@ namespace Interpreter.intermediate
 {
     public interface ICodeNodeType
     {
+        string ToString();
     }
 }

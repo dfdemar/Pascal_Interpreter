@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Interpreter.intermediate
+namespace Interpreter.backend.interpreter
 {
-    public interface ICodeKey
+    public class RuntimeErrorHandler
     {
-        string ToString();
+
     }
 }

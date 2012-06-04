@@ -142,6 +142,7 @@ namespace Interpreter.frontend.pascal.parsers
         private ICodeNode ParseTerm(Token token)
         {
             ICodeNode rootNode = ParseFactor(token);
+            token = CurrentToken();
             TokenType tokenType = token.type;
 
 
@@ -151,7 +152,7 @@ namespace Interpreter.frontend.pascal.parsers
                 ICodeNode opNode = ICodeFactory.CreateICodeNode(nodeType);
                 opNode.AddChild(rootNode);
 
-                token = NextToken();
+                token = NextToken(); // consume the operator
                 opNode.AddChild(ParseFactor(token));
                 rootNode = opNode;
 
