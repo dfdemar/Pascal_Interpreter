@@ -8,7 +8,7 @@ namespace Interpreter.intermediate
     public interface ICodeNode
     {
         //ICodeNodeType GetType();
-        //ICodeNode GetParent();
+        ICodeNode GetParent();
         ICodeNode AddChild(ICodeNode node); // Add a child node.
         List<ICodeNode> GetChildren(); // Return an array list of this node's children.
         void SetAttribute(ICodeKey key, Object value); // Set node attribute.

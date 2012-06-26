@@ -29,6 +29,11 @@ namespace Interpreter.intermediate.ICodeImplementation
             return node;
         }
 
+        public ICodeNode getParent()
+        {
+            return parent;
+        }
+
         public List<ICodeNode> GetChildren()
         {
             return children;
